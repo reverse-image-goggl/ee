@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Search</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-XXXXXXX" crossorigin="anonymous" />
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f2f2f2; /* Google background color */
+}
+
+.container {
+    text-align: center;
+    background-color: #fff; /* Container background color */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.searchButtonGroup {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#urlInput {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.searchButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.searchButton img {
+    width: 30px;
+    height: 30px;
+}
+
+.searchButton:hover {
+    transform: scale(1.1);
+}
+
+.googleOptions {
+    margin-top: 20px;
+}
+
+.googleOptions a {
+    text-decoration: none;
+    color: #4285f4; /* Google Blue */
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #4285f4; /* Google Blue */
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.googleOptions a:hover {
+    background-color: #e7f0ff; /* Google Light Blue */
+}
+
+/* Giriş animasyonu */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Loading indicator -->
+<div class="loadingIndicator">
+    <i class="fas fa-spinner fa-spin"></i>
+</div>
+
+<div class="container">
+    <h2>Start reverse image search!</h2>
+    <p>Paste the relevant image link below, then click the search engine button on the right. To upload an image, click the <b>"Upload Image"</b> button below!</p>
+    <div class="searchButtonGroup">
+        <input type="text" id="urlInput" placeholder="Paste Image URL here">
+        <button class="searchButton" onclick="searchEngine('google')"><img src="icons/google.png" alt="Google"></button>
+        <button class="searchButton" onclick="searchEngine('yandex')"><img src="icons/yandex.png" alt="Yandex"></button>
+        <button class="searchButton" onclick="searchEngine('bing')"><img src="icons/bing.svg" alt="Bing"></button>
+    </div>
+    <div class="googleOptions">
+        <a href="javascript:void(0)" onclick="toggleOptions()">Custom Searches for Google</a>
+    </div>
+    <div class="extraOptions">
+        <label><input type="checkbox" id="colorCheckbox" class="optionCheckbox">Color</label>
+        <label><input type="checkbox" id="bwCheckbox" class="optionCheckbox">Black & White</label>
+        <label><input type="checkbox" id="redCheckbox" class="optionCheckbox">Red</label>
+        <label><input type="checkbox" id="faceCheckbox" class="optionCheckbox">Face</label>
+        <label><input type="checkbox" id="photoCheckbox" class="optionCheckbox">Photo</label>
+        <label><input type="checkbox" id="clipartCheckbox" class="optionCheckbox">Clipart</label>
+        <label><input type="checkbox" id="lineartCheckbox" class="optionCheckbox">Line Art</label>
+        <label><input type="checkbox" id="animatedCheckbox" class="optionCheckbox">Animated</label>
+        <label><input type="checkbox" id="groupCheckbox" class="optionCheckbox">Grouped</label>
+        <label><input type="checkbox" id="sizeCheckbox" class="optionCheckbox">Size</label>
+    </div>
+</div>
+
+<script>
+// Function to be executed when the page is loaded
+document.addEventListener("DOMContentLoaded", function() {
+  // Show the loading indicator
+  document.querySelector('.loadingIndicator').style.display = "block";
+  // Show the container
+  document.querySelector('.container').style.display = 'block';
+});
+
+function searchEngine(engine) {
+  var url = document.getElementById("urlInput").value;
+  var colorParam = document.getElementById("colorCheckbox").checked ? "ic:color" : "";
+  var bwParam = document.getElementById("bwCheckbox").checked ? "ic:gray" : "";
+  var redParam = document.getElementById("redCheckbox").checked ? "ic:specific,isc:red" : "";
+  var faceParam = document.getElementById("faceCheckbox").checked ? "itp:face" : "";
+  var photoParam = document.getElementById("photoCheckbox").checked ? "itp:photo" : "";
+  var clipartParam = document.getElementById("clipartCheckbox").checked ? "itp:clipart" : "";
+  var lineartParam = document.getElementById("lineartCheckbox").checked ? "itp:lineart" : "";
+  var animatedParam = document.getElementById("animatedCheckbox").checked ? "itp:animated" : "";
+  var groupParam = document.getElementById("groupCheckbox").checked ? "isg:to" : "";
+  var sizeParam = document.getElementById("sizeCheckbox").checked ? "isz:lt,islt:4mp" : "";
+  
+  var searchURL = "";
+  switch (engine) {
+    case 'google':
+      searchURL = "https://www.google.com/search?q=" + encodeURIComponent(url) + "&tbm=isch&tbs=" + colorParam + "," + bwParam + "," + redParam + "," + faceParam + "," + photoParam + "," + clipartParam + "," + lineartParam + "," + animatedParam + "," + groupParam + "," + sizeParam;
+      break;
+    case 'yandex':
+      searchURL = "https://yandex.com/images/search?rpt=imageview&url=" + encodeURIComponent(url);
+      break;
+    case 'bing':
+      searchURL = "https://www.bing.com/images/search?q=" + encodeURIComponent(url);
+      break;
+    default:
+      break;
+  }
+  window.open(searchURL, "_blank");
+}
+
+function toggleOptions() {
+  var options = document.querySelector('.extraOptions');
+  options.style.display = options.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>
